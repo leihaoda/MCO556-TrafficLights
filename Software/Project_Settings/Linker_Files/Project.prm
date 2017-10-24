@@ -1,0 +1,43 @@
+/* This is a linker parameter file for the ect9s08gb16 */
+
+NAMES END /* CodeWarrior will pass all the needed files to the linker by 			command line. But here you may add your own files too. */
+
+SEGMENTS /* Here all RAM/ROM areas of the device are listed.
+		        Used in PLACEMENT below. */
+    Z_RAM     =  READ_WRITE   0x0080 TO 0x00FF;
+    RAM       =  READ_WRITE   0x0100 TO 0x077F;
+    MY_STK    =  NO_INIT      0x0780 TO 0x087F;   // 256 bytes reserved for stack
+    ROM       =  READ_ONLY    0xC000 TO 0xFFAF;
+    ROM1      =  READ_ONLY    0xFFC0 TO 0xFFC7;
+END
+
+PLACEMENT /* Here all predefined and user segments are placed into the SEGMENTS defined above. */
+
+    DEFAULT_RAM         INTO  RAM;             /* non-zero page variables */
+
+    _PRESTART,                  /* startup code */
+    STARTUP,                    /* startup data structures */
+    ROM_VAR,                    /* constant variables */
+    STRINGS,                    /* string literals */
+    VIRTUAL_TABLE_SEGMENT,      /* C++ virtual table segment */
+    DEFAULT_ROM,
+    		COPY        INTO  ROM; /* copy down info: how to initialize variables */
+
+    SSTACK          INTO MY_STK; 
+
+    _DATA_ZEROPAGE,             /* zero page variables */
+    MY_ZEROPAGE     INTO  Z_RAM;
+
+END
+
+STACKTOP 0x087F     // stack located in top of RAM
+
+VECTOR ADDRESS 0xFFE0 SPIisr
+// VECTOR ADDRESS 0xFFEC TrafficCountISR
+VECTOR ADDRESS 0xFFF2 EWTrafficISR
+VECTOR ADDRESS 0xFFF4 NSTrafficISR 
+VECTOR ADDRESS 0xFFD6 SCI2RxISR
+VECTOR ADDRESS 0xFFE6 KPisr
+VECTOR ADDRESS 0xFFE4 LCDisr
+VECTOR ADDRESS 0xFFF0 StateTimeISR
+VECTOR ADDRESS 0xFFFE _Startup /* Reset vector: this is the default entry point for 				an application. */
