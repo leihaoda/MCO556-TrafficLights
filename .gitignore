@@ -1,0 +1,4 @@
+Software/.*
+Software/*.xml
+Software/Project_Settings/*.*
+Software/FLASH/*.*
